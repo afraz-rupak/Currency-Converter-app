@@ -1,19 +1,25 @@
-# 🎈 Blank app template
+# FX Converter App
 
-A simple Streamlit app template for you to modify!
+### Author:
+- **Full Name:** Afraz Ul Haque
+- **Student ID:** 25627377
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://blank-app-template.streamlit.app/)
+### Project Description:
+This is a currency converter web app built with Streamlit. It allows users to convert an amount from one currency to another using the Frankfurter API. Users can check the latest exchange rates or historical rates for a given date.
 
-### How to run it on your own machine
+### Files:
+- **app.py:** Main Streamlit script for managing user inputs and displaying the results.
+- **api.py:** Contains the function to make API calls.
+- **frankfurter.py:** Contains functions for calling relevant Frankfurter API endpoints and extracting information.
+- **currency.py:** Contains the function for formatting results to be displayed in the Streamlit app.
 
-1. Install the requirements
-
-   ```
-   $ pip install -r requirements.txt
-   ```
-
-2. Run the app
-
-   ```
-   $ streamlit run streamlit_app.py
-   ```
+### Instructions to Run:
+1. Clone the repository.
+2. Install the dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+3. Run the app:
+    ```bash
+    streamlit run app.py
+    ```
