@@ -1,23 +1,34 @@
 from api import make_api_call
 
+# Fetch available currency codes
 def get_available_currencies():
-    """Fetch all available currencies from Frankfurter API."""
-    endpoint = "/currencies"
-    return make_api_call(endpoint)
+    url = "https://www.frankfurter.app/currencies"
+    data = make_api_call(url)
+    if data:
+        return list(data.keys())
+    return []
 
+# Fetch the latest conversion rate
 def get_latest_rate(from_currency, to_currency, amount):
-    """Get the latest conversion rate for a currency pair."""
-    if from_currency == to_currency:
-        return 1.0  # Return a conversion rate of 1 if currencies are the same
-    endpoint = f"/latest?amount={amount}&from={from_currency}&to={to_currency}"
-    data = make_api_call(endpoint)
-    return data["rates"][to_currency]
+    url = f"https://www.frankfurter.app/latest?from={from_currency}&to={to_currency}"
+    data = make_api_call(url)
+    if data:
+        rate = data['rates'][to_currency]
+        inverse_rate = 1 / rate
+        conversion_text = f"The conversion rate on {data['date']} from {from_currency} to {to_currency} was {rate}. " \
+                          f"So {amount} in {from_currency} corresponds to {amount * rate:.2f} in {to_currency}."
+        return rate, inverse_rate, conversion_text
+    return None, None, "Failed to retrieve data."
 
-def get_historical_rate(from_currency, to_currency, amount, date):
-    """Get historical conversion rate for a specific date."""
-    if from_currency == to_currency:
-        return 1.0  # Return a conversion rate of 1 if currencies are the same
-    formatted_date = date.strftime("%Y-%m-%d")
-    endpoint = f"/{formatted_date}?amount={amount}&from={from_currency}&to={to_currency}"
-    data = make_api_call(endpoint)
-    return data["rates"][to_currency]
+# Fetch the historical conversion rate
+def get_historical_rate(from_currency, to_currency, amount, conversion_date):
+    formatted_date = conversion_date.strftime("%Y-%m-%d")
+    url = f"https://www.frankfurter.app/{formatted_date}?from={from_currency}&to={to_currency}"
+    data = make_api_call(url)
+    if data:
+        rate = data['rates'][to_currency]
+        inverse_rate = 1 / rate
+        conversion_text = f"The conversion rate on {formatted_date} from {from_currency} to {to_currency} was {rate}. " \
+                          f"So {amount} in {from_currency} corresponds to {amount * rate:.2f} in {to_currency}."
+        return rate, inverse_rate, conversion_text
+    return None, None, "Failed to retrieve data."
