@@ -1,39 +1,36 @@
 import streamlit as st
-from frankfurter import get_latest_rate, get_historical_rate, get_available_currencies
-from currency import format_conversion_result
-from datetime import date
+from frankfurter import get_latest_rate, get_historical_rate
+from currency import format_conversion
 
-# Title
-st.title("FX Converter")
+st.title('FX Converter')
 
-# Fetch available currencies from Frankfurter API
-currencies = get_available_currencies()
+# List of available currencies (you can add more as supported by the Frankfurter API)
+available_currencies = ['AUD', 'USD', 'EUR', 'GBP', 'JPY', 'CAD', 'INR', 'CNY', 'NZD', 'CHF']
 
-# Input fields
-amount = st.number_input("Enter the amount to be converted:", min_value=0.0, value=50.0, step=0.01)
-from_currency = st.selectbox("From Currency:", currencies)
-to_currency = st.selectbox("To Currency:", currencies)
+# Inputs
+amount = st.number_input('Enter the amount to be converted:', value=01.0, step=1.0)
+from_currency = st.selectbox('From Currency:', available_currencies)
+to_currency = st.selectbox('To Currency:', available_currencies)
 
-# Get today's date for the latest rate
-today = date.today()
 
-# Get Latest Rate Button
-if st.button("Get Latest Rate"):
-    if from_currency == to_currency:
-        st.error("Please select different currencies for conversion.")
+# Button to get the latest rate (current date)
+if st.button('Get Latest Rate'):
+    rate_info = get_latest_rate(from_currency, to_currency)
+    if rate_info:
+        formatted_result = format_conversion(amount, rate_info['rate'], rate_info['inverse_rate'], from_currency, to_currency, 'today')
+        st.write(formatted_result)
     else:
-        rate, inverse_rate, conversion_text = get_latest_rate(from_currency, to_currency, amount)
-        st.write(format_conversion_result(rate, inverse_rate, conversion_text))
+        st.error('Failed to retrieve conversion rate. Please try again.')
 
-
-# Date input for historical rates
-conversion_date = st.date_input("Select a date for historical rates:", today)
-
-
-# Get Historical Conversion Rate Button
-if st.button("Conversion Rate"):
-    if from_currency == to_currency:
-        st.error("Please select different currencies for conversion.")
+selected_date = st.date_input('Select a date for historical rates:', value=None)
+# Button to get conversion rate for a selected date
+if st.button('Conversion Rate'):
+    if selected_date:
+        rate_info = get_historical_rate(from_currency, to_currency, selected_date)
+        if rate_info:
+            formatted_result = format_conversion(amount, rate_info['rate'], rate_info['inverse_rate'], from_currency, to_currency, selected_date)
+            st.write(formatted_result)
+        else:
+            st.error('Failed to retrieve conversion rate. Please try again.')
     else:
-        rate, inverse_rate, conversion_text = get_historical_rate(from_currency, to_currency, amount, conversion_date)
-        st.write(format_conversion_result(rate, inverse_rate, conversion_text))
+        st.error('Please select a date to get the historical conversion rate.')

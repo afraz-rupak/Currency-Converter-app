@@ -1,9 +1,11 @@
 import requests
 
-# General function to call an API
-def make_api_call(url):
-    response = requests.get(url)
-    if response.status_code == 200:
+def fetch_data(endpoint):
+    url = f"https://api.frankfurter.app/{endpoint}"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
         return response.json()
-    else:
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching data: {e}")
         return None
