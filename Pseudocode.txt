@@ -1,0 +1,17 @@
+Start
+    Display input form for amount, source currency, target currency, and date
+    IF user clicks "Get Latest Rate"
+        Retrieve the latest exchange rate from the API
+        IF rate retrieval is successful
+            Convert the amount to target currency
+            Display the converted amount and rate details
+        ELSE
+            Show an error message
+    ELSE IF user clicks "Conversion Rate" and selects a historical date
+        Retrieve historical exchange rate from the API
+        IF rate retrieval is successful
+            Convert the amount using the historical rate
+            Display the converted amount and rate details
+        ELSE
+            Show an error message
+End
